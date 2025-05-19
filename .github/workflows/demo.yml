@@ -2,22 +2,63 @@ name: pyinstaller
 on: workflow_dispatch
 
 jobs: 
-    build-on-windows:
-        runs-on: windows-2022
-        steps:
-            - name: checkout code # 使用官方的 "checkout"，這個動作會把專案的程式碼下載到虛擬機上
-              uses: actions/checkout@v4
-            - name: install pyinstaller
-              run: pip install pyinstaller # 執行命令：使用 pip 安裝 `pyinstaller`，這個套件是用來把 Python 程式打包成獨立的可執行檔 (EXE)
-            - name: build exe
-              run: pyinstaller sha256.py -F
-              # 執行命令：用 `pyinstaller` 打包 `sha256.py` 檔案成單一獨立的 EXE 檔案
-                # - `-F` 代表 "One File"，意思是會把所有依賴打包到一個檔案中
-                # 生成的 EXE 檔案會出現在 `dist` 資料夾下
-            - name: upload exe file
-              uses: actions/upload-artifact@v4
-              with:
-                name: sha256-windows-exe
-                path: dist/sha256.exe
-            
-            
+  build-on-windows:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout code # 使用官方的 "checkout"，這個動作會把專案的程式碼下載到虛擬機上
+        uses: actions/checkout@v4
+
+      - name: Install pyinstaller
+        run: pip install pyinstaller 
+        # 使用 pip 安裝 `pyinstaller`，這個套件是用來把 Python 程式打包成獨立的可執行檔 (EXE)
+
+      - name: Build exe
+        run: pyinstaller sha256.py -F
+        # 用 `pyinstaller` 打包 `sha256.py` 檔案成單一獨立的 EXE 檔案
+        # - `-F` 代表 "One File"，意思是會把所有依賴打包到一個檔案中
+        # 生成的 EXE 檔案會出現在 `dist` 資料夾下
+
+      - name: Upload exe file
+        uses: actions/upload-artifact@v4
+        with:
+          name: sha256-windows-exe
+          path: dist/sha256.exe
+          # 上傳 Windows 的打包結果作為 Artifact，名稱為 `sha256-windows-exe`
+
+  build-on-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Linux Executable
+        run: pyinstaller sha256.py -F
+        # 在 Linux 環境下打包成獨立的執行檔 (通常是 ELF 格式)
+
+      - name: Upload Linux Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: sha256-linux-bin
+          path: dist/sha256
+          # 上傳 Linux 的打包結果作為 Artifact，名稱為 `sha256-linux-bin`
+
+  build-on-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pyinstaller
+        run: pip3 install pyinstaller
+        # MacOS 環境需要使用 pip3 來安裝 pyinstaller
+
+      - name: Build Mac Executable
+        run: pyinstaller sha256.py -F
+        # 打包成 Mac 可執行檔 (Mach-O 格式)
+
+      - name: Upload Mac Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: sha256-mac-bin
+          path: dist/sha256
+          # 上傳 Mac 的打包結果作為 Artifact，名稱為 `sha256-mac-bin`
