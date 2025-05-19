@@ -75,3 +75,52 @@ jobs:
           name: sha256-mac-bin
           path: dist/sha256
         # 上傳打包好的檔案
+
+  test-build-windows:
+    runs-on: windows-2022
+    needs: build-on-windows
+    steps:
+        - name: download exe file
+          uses: actions/download-artifact@v4
+          with:
+            name: sha256-windows-exe
+        - name: test exe file
+          run: |
+            ls
+            ./sha256.exe sha256.exe
+  test-build-linux:
+    runs-on: ubuntu-latest
+    needs: build-on-linux
+    steps:
+      - name: Download Linux binary
+        uses: actions/download-artifact@v4
+        with:
+          name: sha256-linux-bin
+      - name: Add execute permission
+        run: chmod +x sha256
+        # Linux 執行檔需要增加執行權限
+
+      - name: Test Linux binary
+        run: |
+          ls
+          ./sha256 sha256
+        # 測試 Linux 的可執行檔，並顯示結果
+
+  test-build-mac:
+    runs-on: macos-latest
+    needs: build-on-mac
+    steps:
+      - name: Download Mac binary
+        uses: actions/download-artifact@v4
+        with:
+          name: sha256-mac-bin
+
+      - name: Add execute permission
+        run: chmod +x sha256
+        # Mac 執行檔同樣需要增加執行權限
+
+      - name: Test Mac binary
+        run: |
+          ls
+          ./sha256 sha256
+        # 測試 Mac 的可執行檔，並顯示結果
