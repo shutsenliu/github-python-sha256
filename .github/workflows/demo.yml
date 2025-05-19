@@ -14,5 +14,10 @@ jobs:
               # 執行命令：用 `pyinstaller` 打包 `sha256.py` 檔案成單一獨立的 EXE 檔案
                 # - `-F` 代表 "One File"，意思是會把所有依賴打包到一個檔案中
                 # 生成的 EXE 檔案會出現在 `dist` 資料夾下
+            - name: upload exe file
+              uses: actions/upload-artifact@v4
+              with:
+                name: sha256-windows-exe
+                path: dist/sha256.exe
             
             
