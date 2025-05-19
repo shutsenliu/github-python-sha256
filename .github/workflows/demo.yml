@@ -1,0 +1,18 @@
+name: pyinstaller
+on: workflow_dispatch
+
+jobs: 
+    build-on-windows:
+        runs-on: windows-2022
+        steps:
+            - name: checkout code # 使用官方的 "checkout"，這個動作會把專案的程式碼下載到虛擬機上
+              uses: actions/checkout@v4
+            - name: install pyinstaller
+              run: pip install pyinstaller # 執行命令：使用 pip 安裝 `pyinstaller`，這個套件是用來把 Python 程式打包成獨立的可執行檔 (EXE)
+            - name: build exe
+              run: pyinstaller sha256.py -F
+              # 執行命令：用 `pyinstaller` 打包 `sha256.py` 檔案成單一獨立的 EXE 檔案
+                # - `-F` 代表 "One File"，意思是會把所有依賴打包到一個檔案中
+                # 生成的 EXE 檔案會出現在 `dist` 資料夾下
+            
+            
