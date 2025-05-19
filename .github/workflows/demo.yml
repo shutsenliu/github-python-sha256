@@ -55,17 +55,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install pyinstaller
-        run: pip3 install pyinstaller
-        # MacOS 環境需要使用 pip3 來安裝 pyinstaller
+      - name: Setup Python Virtual Environment
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install pyinstaller
+        # 建立一個虛擬環境並且安裝 PyInstaller
 
-      - name: Build Binary
-        run: pyinstaller sha256.py -F
-        # 打包成 Mac 可執行檔 (Mach-O 格式)
+      - name: Build Mac Executable
+        run: |
+          source venv/bin/activate
+          pyinstaller sha256.py -F
+        # 使用虛擬環境中的 PyInstaller 來進行打包
 
       - name: Upload Mac Executable
         uses: actions/upload-artifact@v4
         with:
-          name: sha256-mac
+          name: sha256-mac-bin
           path: dist/sha256
-          # 上傳 Mac 的打包結果作為 Artifact，名稱為 `sha256-mac-bin`
+        # 上傳打包好的檔案
