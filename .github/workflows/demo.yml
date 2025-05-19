@@ -31,6 +31,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pyinstaller
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip install pyinstaller
+        # 安裝 Linux 所需的依賴和 pyinstaller
+
       - name: Build Linux Executable
         run: pyinstaller sha256.py -F
         # 在 Linux 環境下打包成獨立的執行檔 (通常是 ELF 格式)
@@ -52,13 +59,13 @@ jobs:
         run: pip3 install pyinstaller
         # MacOS 環境需要使用 pip3 來安裝 pyinstaller
 
-      - name: Build Mac Executable
+      - name: Build Binary
         run: pyinstaller sha256.py -F
         # 打包成 Mac 可執行檔 (Mach-O 格式)
 
       - name: Upload Mac Executable
         uses: actions/upload-artifact@v4
         with:
-          name: sha256-mac-bin
+          name: sha256-mac
           path: dist/sha256
           # 上傳 Mac 的打包結果作為 Artifact，名稱為 `sha256-mac-bin`
